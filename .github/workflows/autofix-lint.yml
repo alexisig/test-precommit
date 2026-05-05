@@ -25,12 +25,13 @@ jobs:
               repo: context.repo.repo,
               pull_number: context.issue.number,
             });
+            core.setOutput('sha', pr.data.head.sha);
             core.setOutput('ref', pr.data.head.ref);
 
       - name: Checkout PR branch
         uses: actions/checkout@v4
         with:
-          ref: ${{ steps.pr.outputs.ref }}
+          ref: ${{ steps.pr.outputs.sha }}
 
       - name: Set up Python 3.12
         uses: actions/setup-python@v6.0.0
@@ -45,3 +46,4 @@ jobs:
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: "style: apply pre-commit fixes"
+          branch: ${{ steps.pr.outputs.ref }}
